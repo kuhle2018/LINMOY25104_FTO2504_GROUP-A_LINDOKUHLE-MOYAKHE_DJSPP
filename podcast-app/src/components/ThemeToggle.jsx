@@ -20,19 +20,24 @@ const ThemeToggle = () => {
 
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        background: theme === "light" ? "#eee" : "#333",
-        borderRadius: "20px",
-        padding: "4px 12px",
-        cursor: "pointer",
-        userSelect: "none",
-        transition: "background 0.3s",
-      }}
-      onClick={toggleTheme}
-      title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-    >
+  role="button"
+  tabIndex={0}
+  onKeyDown={(e) => { if (e.key === "Enter") toggleTheme(); }}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    background: theme === "light" ? "#eee" : "#333",
+    borderRadius: "20px",
+    padding: "4px 12px",
+    cursor: "pointer",
+    userSelect: "none",
+    transition: "background 0.3s",
+  }}
+  onClick={toggleTheme}
+  title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+>
+
+
       <span style={{
         fontSize: "1.2em",
         marginRight: "8px",
