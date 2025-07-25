@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 const AudioPlayer = ({ episode }) => {
   const audioRef = useRef(null);
@@ -6,31 +6,27 @@ const AudioPlayer = ({ episode }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, []);
+
   const handlePlayPause = () => {
     if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
+    isPlaying ? audioRef.current.pause() : audioRef.current.play();
     setIsPlaying(!isPlaying);
   };
 
-  const handleTimeUpdate = () => {
-    if (!audioRef.current) return;
-    setCurrentTime(audioRef.current.currentTime);
-  };
-
-  const handleLoadedMetadata = () => {
-    if (!audioRef.current) return;
-    setDuration(audioRef.current.duration);
-  };
-
+  const handleTimeUpdate = () => setCurrentTime(audioRef.current?.currentTime || 0);
+  const handleLoadedMetadata = () => setDuration(audioRef.current?.duration || 0);
   const handleSeek = (e) => {
-    if (!audioRef.current) return;
     const time = Number(e.target.value);
-    audioRef.current.currentTime = time;
-    setCurrentTime(time);
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
   };
 
   const {
@@ -41,77 +37,19 @@ const AudioPlayer = ({ episode }) => {
   } = episode || {};
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "#fff",
-        borderTop: "1px solid #eee",
-        display: "flex",
-        alignItems: "center",
-        padding: "0.5rem 2rem",
-        zIndex: 100,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem", flex: 1 }}>
+    <div style={{ padding: "1rem", background: "#fff", borderRadius: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
         {coverImage ? (
-          <img
-            src={coverImage}
-            alt="Cover"
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "6px",
-              objectFit: "cover",
-            }}
-          />
+          <img src={coverImage} alt="Cover" style={{ width: 60, height: 60, borderRadius: 8, objectFit: "cover" }} />
         ) : (
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              background: "#ccc",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "6px",
-              fontWeight: "bold",
-            }}
-          >
-            🎧
-          </div>
+          <div style={{ width: 60, height: 60, background: "#ccc", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🎧</div>
         )}
         <div>
-          <div style={{ fontWeight: "bold" }}>{title}</div>
-          <div style={{ fontSize: "0.9em", color: "#888" }}>{podcastTitle}</div>
+          <h4 style={{ margin: 0 }}>{title}</h4>
+          <p style={{ margin: 0, color: "#666" }}>{podcastTitle}</p>
         </div>
       </div>
-      <button
-        onClick={handlePlayPause}
-        style={{
-          background: "none",
-          border: "none",
-          fontSize: "1.5em",
-          marginRight: "1rem",
-          cursor: "pointer",
-        }}
-      >
-        {isPlaying ? "⏸" : "▶"}
-      </button>
-      <input
-        type="range"
-        min={0}
-        max={duration}
-        value={currentTime}
-        onChange={handleSeek}
-        style={{ width: "120px", marginRight: "1rem" }}
-      />
-      <span style={{ fontSize: "0.9em", color: "#888", marginRight: "1rem" }}>
-        {Math.floor(currentTime / 60)}:{("0" + Math.floor(currentTime % 60)).slice(-2)} /{" "}
-        {Math.floor(duration / 60)}:{("0" + Math.floor(duration % 60)).slice(-2)}
-      </span>
+
       <audio
         ref={audioRef}
         src={audioUrl}
@@ -119,17 +57,16 @@ const AudioPlayer = ({ episode }) => {
         onLoadedMetadata={handleLoadedMetadata}
         style={{ display: "none" }}
       />
-      <button
-        style={{
-          background: "none",
-          border: "none",
-          fontSize: "1.2em",
-          cursor: "pointer",
-        }}
-        title="Volume"
-      >
-        🔊
-      </button>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <button onClick={handlePlayPause} style={{ fontSize: "1.5rem", background: "none", border: "none", cursor: "pointer" }}>
+          {isPlaying ? "⏸" : "▶"}
+        </button>
+        <input type="range" min={0} max={duration} value={currentTime} onChange={handleSeek} style={{ flex: 1 }} />
+        <span style={{ fontSize: "0.9rem", color: "#888" }}>
+          {Math.floor(currentTime / 60)}:{("0" + Math.floor(currentTime % 60)).slice(-2)} / {Math.floor(duration / 60)}:{("0" + Math.floor(duration % 60)).slice(-2)}
+        </span>
+      </div>
     </div>
   );
 };
