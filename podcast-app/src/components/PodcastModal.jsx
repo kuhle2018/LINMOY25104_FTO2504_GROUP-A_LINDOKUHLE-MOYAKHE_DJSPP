@@ -1,117 +1,84 @@
 import React from "react";
-import { genres } from "../data";
 
-const PodcastModal = ({ podcast, onClose }) => {
-  if (!podcast) return null;
+const PodcastModal = ({ isOpen, onClose, podcast, episodes }) => {
+  if (!isOpen || !podcast) return null;
+
+  const isDark = document.body.classList.contains("dark");
+
+  const backdropStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9998,
+  };
+
+  const modalStyle = {
+    backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+    color: isDark ? "#eee" : "#222",
+    padding: "1.5rem",
+    borderRadius: "12px",
+    maxWidth: "600px",
+    width: "90%",
+    maxHeight: "80vh",
+    overflowY: "auto",
+    boxShadow: "0 0 25px rgba(0, 0, 0, 0.2)",
+    zIndex: 9999,
+  };
+
+  const titleStyle = {
+    marginBottom: "1rem",
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+  };
+
+  const closeButtonStyle = {
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    background: "none",
+    border: "none",
+    color: isDark ? "#eee" : "#222",
+  };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "16px",
-          padding: "2rem",
-          maxWidth: "500px",
-          width: "100%",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
-          position: "relative",
-        }}
-      >
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            background: "none",
-            border: "none",
-            fontSize: "1.5em",
-            cursor: "pointer",
-          }}
-        >
-          ×
+    <div style={backdropStyle} onClick={onClose}>
+      <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+        <button style={closeButtonStyle} onClick={onClose}>
+          ✖
         </button>
+        <h2 style={titleStyle}>{podcast.title}</h2>
+        <p style={{ marginBottom: "1rem" }}>{podcast.description}</p>
 
-        <img
-          src={podcast.image}
-          alt={podcast.title}
-          style={{
-            width: "100%",
-            height: "180px",
-            objectFit: "cover",
-            borderRadius: "8px",
-          }}
-        />
-        <h2 style={{ margin: "1em 0 0.5em 0" }}>{podcast.title}</h2>
-
-        <div style={{ marginBottom: "0.5em" }}>
-          {podcast.genres.map((id) => {
-            const genre = genres.find((g) => g.id === id);
-            return (
-              <span
-                key={id}
+        <h3 style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>Episodes</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {Array.isArray(episodes) && episodes.length > 0 ? (
+            episodes.map((ep) => (
+              <li
+                key={ep.id}
                 style={{
-                  background: "#eee",
-                  borderRadius: "4px",
-                  padding: "2px 8px",
-                  marginRight: "4px",
-                  fontSize: "0.85em",
-                }}
-              >
-                {genre ? genre.title : "Unknown"}
-              </span>
-            );
-          })}
-        </div>
-
-        <div style={{ color: "#555", marginBottom: "0.5em" }}>{podcast.description}</div>
-        <div style={{ fontSize: "0.85em", color: "#aaa", marginBottom: "1em" }}>
-          Updated: {podcast.updated}
-        </div>
-
-        {/* 🎬 Render Seasons and Episodes if available */}
-        {Array.isArray(podcast.seasons) && podcast.seasons.length > 0 && (
-          <div>
-            <h3 style={{ marginBottom: "0.5em" }}>Seasons</h3>
-            {podcast.seasons.map((season, index) => (
-              <div
-                key={season.id || index}
-                style={{
-                  marginBottom: "1em",
-                  padding: "0.5em",
-                  border: "1px solid #eee",
+                  marginBottom: "1rem",
+                  padding: "0.75rem",
                   borderRadius: "8px",
+                  background: isDark ? "#2a2a2a" : "#f2f2f2",
+                  color: isDark ? "#ccc" : "#333",
                 }}
               >
-                <strong>Season {season.number}</strong>
-                {season.episodes && (
-                  <ul style={{ marginTop: "0.5em", paddingLeft: "1rem", fontSize: "0.95em" }}>
-                    {season.episodes.map((ep) => (
-                      <li key={ep.id} style={{ marginBottom: "0.3em" }}>
-                        🎧 {ep.title}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+                <h4 style={{ marginBottom: "0.5rem" }}>{ep.title}</h4>
+                <p style={{ fontSize: "0.9rem" }}>{ep.description || "No description available."}</p>
+              </li>
+            ))
+          ) : (
+            <li style={{ color: isDark ? "#888" : "#555" }}>No episodes available.</li>
+          )}
+        </ul>
       </div>
     </div>
   );

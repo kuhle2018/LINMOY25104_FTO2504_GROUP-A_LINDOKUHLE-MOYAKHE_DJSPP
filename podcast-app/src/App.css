@@ -1,23 +1,38 @@
-/* 🌍 GLOBAL STYLES */
+/* 🌍 GLOBAL BASE */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Default (dark theme) */
   --main-bg: #242424;
-  --light-bg: #ffffff;
-  --text-color: rgba(255, 255, 255, 0.87);
+  --card-bg: #1a1a1a;
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-muted: #bbb;
+  --modal-bg: #fff;
+  --modal-text: #000;
+  --header-bg: #1a1a1a;
+  --footer-bg: #1a1a1a;
+  --filter-bg: #333;
+  --input-bg: #444;
+  --icon-color: #fff;
 }
 
 [data-theme='light'] {
   --main-bg: #ffffff;
-  --text-color: #213547;
+  --card-bg: #f9f9f9;
+  --text-primary: #213547;
+  --text-muted: #555;
+  --modal-bg: #fff;
+  --modal-text: #000;
+  --header-bg: #f0f0f0;
+  --footer-bg: #eee;
+  --filter-bg: #ddd;
+  --input-bg: #fff;
+  --icon-color: #333;
 }
 
 body {
@@ -25,7 +40,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--main-bg);
-  color: var(--text-color);
+  color: var(--text-primary);
 }
 
 /* 🔝 HEADER */
@@ -34,7 +49,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: #1a1a1a;
+  background-color: var(--header-bg);
+  color: var(--text-primary);
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -49,6 +65,13 @@ body {
   gap: 0.8rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 🔍 SEARCH */
 #search {
   font-size: 1.2rem;
   cursor: pointer;
@@ -58,28 +81,30 @@ body {
   padding: 0.5rem;
   border-radius: 6px;
   border: none;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
+/* 👤 PROFILE */
 .user-face {
   height: 40px;
   border-radius: 50%;
 }
 
 /* 🎛️ ICONS */
-.icon-btn, .theme-toggle-btn {
+.icon-btn,
+.theme-toggle-btn {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.3rem;
+  color: var(--icon-color);
 }
 
 .icon-btn img,
 .theme-toggle-btn img {
   height: 24px;
   width: 24px;
-  display: inline-block;
-
-
 }
 
 /* 🔽 FILTERS */
@@ -97,6 +122,8 @@ body {
   border-radius: 6px;
   border: 1px solid #ccc;
   min-width: 180px;
+  background-color: var(--filter-bg);
+  color: var(--text-primary);
 }
 
 /* 🧱 GRID */
@@ -108,12 +135,13 @@ body {
 }
 
 .podcast-card {
-  background-color: #1a1a1a;
+  background-color: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
+  color: var(--text-primary);
 }
 
 .podcast-card:hover {
@@ -134,7 +162,7 @@ body {
 .podcast-info {
   padding: 0 1rem 1rem;
   font-size: 0.9rem;
-  color: #bbb;
+  color: var(--text-muted);
 }
 
 /* 🎬 MODALS */
@@ -144,7 +172,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -152,8 +180,8 @@ body {
 }
 
 .modal-content {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--modal-bg);
+  color: var(--modal-text);
   border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
@@ -209,15 +237,18 @@ body {
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1em;
+  padding: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
 /* 🧭 FOOTER */
 .footer {
-  background-color: #1a1a1a;
+  background-color: var(--footer-bg);
   text-align: center;
   padding: 2rem 1rem;
   margin-top: 4rem;
-  color: #ccc;
+  color: var(--text-muted);
 }
 
 .footer-content {
@@ -237,6 +268,32 @@ body {
 .footer-social img:hover {
   opacity: 1;
 }
+
+/* 🌙 TOGGLE SWITCH */
+.theme-toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--filter-bg);
+  border-radius: 20px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+
 
 /* 📱 RESPONSIVE */
 @media (max-width: 1024px) {

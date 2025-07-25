@@ -1,10 +1,23 @@
-import './App.css';
+ import './App.css';
 import { useEffect, useState } from 'react';
+import ThemeToggle from "./components/ThemeToggle";
 
 function App() {
   const [podcasts, setPodcasts] = useState([]);
-  const [theme, setTheme] = useState('dark');
-  const [selectedPodcast, setSelectedPodcast] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
+
+  // ✅ Here's the hardcoded mockPodcast for modal testing
+  const mockPodcast = {
+    title: "Hardcoded Podcast",
+    image: "https://via.placeholder.com/300x300.png?text=Podcast+Image",
+    description: "This is a mock description.",
+    genre: "Technology",
+    updated: "2025-07-25",
+    seasons: ["Season 1", "Season 2"]
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -15,56 +28,53 @@ function App() {
       .catch(err => console.error('Fetch error:', err));
   }, []);
 
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
   const handleToggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
   };
 
-  const openModal = (podcast) => {
-    setSelectedPodcast(podcast);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedPodcast(null);
-    setIsModalOpen(false);
-  };
-
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   const openSearch = () => setIsSearchOpen(true);
   const closeSearch = () => setIsSearchOpen(false);
 
   return (
     <div className="app-wrapper">
-      {/* 🌟 HEADER */}
+      {/* HEADER */}
       <header className="header">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDWC5SM8O6vu0ymMG_8DTiA203Uqva4v-lhg&s"
-          alt="Podcast App Logo"
-          className="header-logo"
-        />
-        <h1>Podcast App</h1>
-        <div className="header-right">
-          <div id="search" onClick={openSearch}>🔍</div>
-          <input id="search-input" type="text" placeholder="Search podcasts..." />
+        <div className="logo-section">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDWC5SM8O6vu0ymMG_8DTiA203Uqva4v-lhg&s"
+            alt="Podcast App Logo"
+            className="app-logo"
+          />
+          <span className="app-name">Podcast App</span>
+        </div>
+        <div className="header-actions">
+          <div id="search" onClick={openSearch} className="icon-btn">🔍</div>
           <img
             src="https://img.freepik.com/premium-vector/woman-profile-icon-with-voice-waves-symbol-podcast-audiobook-with-female-head-audio-translator_653980-388.jpg?w=360"
             alt="User"
             className="user-face"
           />
-          <button className="theme-toggle-btn" onClick={handleToggleTheme}>
-            <img src="/theme-icon.png" alt="Toggle theme" />
-          </button>
+          <ThemeToggle toggleTheme={handleToggleTheme} />
           <button className="icon-btn">
-            <img src="/heart-icon.png" alt="Favorites" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/833/833472.png"
+              alt="Heart Icon"
+            />
           </button>
         </div>
       </header>
 
-      {/* 🔽 FILTERS */}
-      <div className="filters">
-        <label htmlFor="genre-select">Filter by:</label>
-        <select id="genre-select" className="genre-dropdown">
+      {/* FILTERS */}
+      <div className="filters-bar">
+        <select id="genre-select" className="filter-select">
           <option>All Genres</option>
           <option>Comedy</option>
           <option>News</option>
@@ -81,8 +91,7 @@ function App() {
           <option>Science</option>
           <option>TV & Film</option>
         </select>
-
-        <select id="sort-select" className="recent-dropdown">
+        <select id="sort-select" className="filter-select">
           <option>Recently Updated</option>
           <option>Most Popular</option>
           <option>Newest</option>
@@ -92,14 +101,14 @@ function App() {
         </select>
       </div>
 
-      {/* 🎧 PODCAST GRID */}
+      {/* PODCAST GRID */}
       <main>
         <div id="podcast-container" className="podcast-grid">
           {podcasts.map((podcast) => (
             <div
               key={podcast.id}
               className="podcast-card"
-              onClick={() => openModal(podcast)}
+              onClick={openModal}
             >
               <img src={podcast.image} alt={podcast.title} className="podcast-image" />
               <h2 className="podcast-title">{podcast.title}</h2>
@@ -111,45 +120,40 @@ function App() {
         </div>
       </main>
 
-      {/* 🧩 PODCAST MODAL */}
-      {isModalOpen && selectedPodcast && (
+      {/* MODAL */}
+      {isModalOpen && (
         <div className="modal" id="podcast-modal">
           <div className="modal-content">
             <span className="close-btn" onClick={closeModal}>&times;</span>
             <div className="modal-header">
-              <h2>{selectedPodcast.title}</h2>
+              <h2>{mockPodcast.title}</h2>
             </div>
             <div className="modal-body">
-              <div className="modal-cover">
-                <img src={selectedPodcast.image} alt="Podcast Cover" />
+              <img src={mockPodcast.image} alt="Podcast Cover" />
+              <div className="modal-description">
+                <h3>Description</h3>
+                <p>{mockPodcast.description}</p>
               </div>
-              <div className="modal-info">
-                <div className="modal-description">
-                  <h3>Description</h3>
-                  <p>{selectedPodcast.description || 'No description available'}</p>
-                </div>
-                <div className="modal-genres">
-                  <h4>Genres</h4>
-                  <div className="genres-list">{selectedPodcast.genre}</div>
-                  <div className="modal-updated">
-                    <span>
-                      📅 Last updated: {selectedPodcast.updated}
-                    </span>
-                  </div>
-                </div>
+              <div className="modal-genres">
+                <h4>Genres</h4>
+                <p>{mockPodcast.genre}</p>
               </div>
+              <div className="modal-updated">
+                <span>📅 Last updated: {mockPodcast.updated}</span>
+              </div>
+              <audio controls style={{ marginTop: '1rem' }}>
+                <source src="https://podcast-api.netlify.app/placeholder-audio.mp3" type="audio/mpeg" />
+              </audio>
             </div>
             <div className="modal-seasons">
               <h3>Seasons</h3>
-              <div className="season-list">
-                {selectedPodcast.seasons ?? 'N/A'}
-              </div>
+              <div>{mockPodcast.seasons.join(', ')}</div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 🔎 SEARCH MODAL */}
+      {/* SEARCH MODAL */}
       {isSearchOpen && (
         <div className="modal" id="search-modal">
           <div className="modal-content" style={{ maxWidth: '400px' }}>
@@ -165,46 +169,28 @@ function App() {
         </div>
       )}
 
-      {/* 🚀 FOOTER */}
+      {/* FOOTER */}
       <footer className="footer">
         <div className="footer-content">
           <span>&copy; 2025 Podcast App. All rights reserved.</span>
           <span>Created by Lindokuhle Moyakhe</span>
         </div>
-        <div className="footer-social">
-          <a
-            href="https://www.facebook.com/lindokuhle.moyakhe"
-            target="_blank"
-            aria-label="Facebook"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/facebook.svg"
-              alt="facebook"
-              height="40"
-            />
+        <div className="social-icons">
+          <a href="https://facebook.com/lindokuhle.moyakhe" target="_blank">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/facebook.svg" alt="Facebook" />
           </a>
-          <a
-            href="https://github.com/kuhle2018"
-            target="_blank"
-            aria-label="Github"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg"
-              alt="github"
-              height="40"
-            />
+          <a href="https://github.com/kuhle2018" target="_blank">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg" alt="GitHub" />
           </a>
-          <a
-            href="https://www.linkedin.com/in/lindokuhle-moyakhe-60366125/"
-            target="_blank"
-            aria-label="linkedin"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/linkedin.svg"
-              alt="linkedin"
-              height="40"
-            />
+          <a href="https://linkedin.com/in/lindokuhle-moyakhe-60366125" target="_blank">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/linkedin.svg" alt="LinkedIn" />
           </a>
+        </div>
+        <div style={{ marginTop: '2rem' }}>
+          <audio controls>
+            <source src="https://podcast-api.netlify.app/placeholder-audio.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
         </div>
       </footer>
     </div>
