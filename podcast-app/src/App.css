@@ -1,6 +1,6 @@
+/* 🌍 GLOBAL STYLES */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -9,75 +9,250 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --main-bg: #242424;
+  --light-bg: #ffffff;
+  --text-color: rgba(255, 255, 255, 0.87);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+[data-theme='light'] {
+  --main-bg: #ffffff;
+  --text-color: #213547;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--main-bg);
+  color: var(--text-color);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  margin-bottom: 1rem;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
+/* 🔝 HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
   background-color: #1a1a1a;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-logo {
+  height: 50px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#search {
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
+
+#search-input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.user-face {
+  height: 40px;
+  border-radius: 50%;
 }
+
+/* 🎛️ ICONS */
+.icon-btn, .theme-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+}
+
+.icon-btn img,
+.theme-toggle-btn img {
+  height: 24px;
+  width: 24px;
+}
+
+/* 🔽 FILTERS */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+
+.genre-dropdown,
+.recent-dropdown {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 180px;
+}
+
+/* 🧱 GRID */
 .podcast-grid {
-  width: 100%;
-  max-width: 1400px; /* optional: to prevent ultra-wide stretching */
-  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  padding: 2rem 1rem;
+  padding: 2rem;
 }
 
+.podcast-card {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
 
+.podcast-card:hover {
+  transform: scale(1.03);
+}
 
+.podcast-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
 
+.podcast-title {
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem 0;
+}
 
+.podcast-info {
+  padding: 0 1rem 1rem;
+  font-size: 0.9rem;
+  color: #bbb;
+}
 
+/* 🎬 MODALS */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.modal-content {
+  background-color: #fff;
+  color: #000;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 90%;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* 📚 MODAL DETAILS */
+.modal-header h2 {
+  margin-bottom: 1rem;
+}
+
+.modal-body {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-cover img {
+  width: 200px;
+  border-radius: 8px;
+}
+
+.modal-description,
+.modal-genres {
+  flex: 1;
+}
+
+.genres-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modal-updated {
+  margin-top: 1rem;
+}
+
+.modal-seasons {
+  margin-top: 2rem;
+}
+
+/* 🔍 SEARCH MODAL */
+#search-modal input {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+/* 🧭 FOOTER */
+.footer {
+  background-color: #1a1a1a;
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 4rem;
+  color: #ccc;
+}
+
+.footer-content {
+  margin-bottom: 1rem;
+}
+
+.footer-social a {
+  margin: 0 0.5rem;
+}
+
+.footer-social img {
+  height: 40px;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.footer-social img:hover {
+  opacity: 1;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 1024px) {
+  .podcast-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  a:hover {
-    color: #747bff;
+}
+
+@media (max-width: 600px) {
+  .podcast-grid {
+    grid-template-columns: 1fr;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .modal-body {
+    flex-direction: column;
+  }
+
+  .modal-cover img {
+    width: 100%;
   }
 }
 
